@@ -49,7 +49,7 @@ You should see `v20` or higher.
 ### 2. Get the source
 
 ```bash
-git clone https://github.com/<your-org>/inpolio.git
+git clone https://github.com/nadith-real/inpolio.git
 cd inpolio
 ```
 
