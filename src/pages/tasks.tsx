@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, todayIsoDate } from "@/lib/utils";
 import type { Task, TaskPriority, TaskStatus } from "@/types";
@@ -80,18 +81,20 @@ export function TasksPage() {
               <TableCell><StatusBadge value={t.priority} /></TableCell>
               <TableCell><StatusBadge value={t.status} /></TableCell>
               <TableCell className="text-right">
-                {t.status !== "completed" ? (
-                  <Button variant="ghost" size="sm" onClick={() => upsert("tasks", { ...t, status: "completed" })}>
-                    Complete
-                  </Button>
-                ) : null}
-                <Button variant="ghost" size="sm" onClick={() => {
-                  setEditing(t);
-                  setForm({ title: t.title, description: t.description, dueDate: t.dueDate, priority: t.priority, status: t.status, customerId: t.customerId, orderId: t.orderId });
-                  setError("");
-                  setOpen(true);
-                }}>Edit</Button>
-                <Button variant="ghost" size="sm" onClick={() => setDelId(t.id)}>Delete</Button>
+                <WriteGate>
+                  {t.status !== "completed" ? (
+                    <Button variant="ghost" size="sm" onClick={() => upsert("tasks", { ...t, status: "completed" })}>
+                      Complete
+                    </Button>
+                  ) : null}
+                  <Button variant="ghost" size="sm" onClick={() => {
+                    setEditing(t);
+                    setForm({ title: t.title, description: t.description, dueDate: t.dueDate, priority: t.priority, status: t.status, customerId: t.customerId, orderId: t.orderId });
+                    setError("");
+                    setOpen(true);
+                  }}>Edit</Button>
+                  <Button variant="ghost" size="sm" onClick={() => setDelId(t.id)}>Delete</Button>
+                </WriteGate>
               </TableCell>
             </TableRow>
           ))}
@@ -104,7 +107,11 @@ export function TasksPage() {
       <PageHeader
         title="Tasks"
         description="Work queue grouped by due date."
-        actions={<Button onClick={() => { setEditing(null); setForm(empty()); setError(""); setOpen(true); }}><Plus /> New task</Button>}
+        actions={
+          <WriteGate>
+            <Button onClick={() => { setEditing(null); setForm(empty()); setError(""); setOpen(true); }}><Plus /> New task</Button>
+          </WriteGate>
+        }
       />
       {data.tasks.length === 0 ? (
         <EmptyState icon={CheckSquare} title="No tasks" description="Create a task or let automations generate follow-ups." />

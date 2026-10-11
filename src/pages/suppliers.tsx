@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, matchesQuery } from "@/lib/utils";
 import type { Supplier } from "@/types";
@@ -44,7 +45,11 @@ export function SuppliersPage() {
       <PageHeader
         title="Suppliers"
         description="Vendors linked to inventory products."
-        actions={<Button onClick={() => { setEditing(null); setForm(empty()); setError(""); setOpen(true); }}><Plus /> New supplier</Button>}
+        actions={
+          <WriteGate>
+            <Button onClick={() => { setEditing(null); setForm(empty()); setError(""); setOpen(true); }}><Plus /> New supplier</Button>
+          </WriteGate>
+        }
       />
       <Input className="mb-3 max-w-md" placeholder="Search suppliers…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search suppliers" />
       {rows.length === 0 ? (
@@ -71,8 +76,10 @@ export function SuppliersPage() {
                 <TableCell className="hidden sm:table-cell">{s.phone || "—"}</TableCell>
                 <TableCell>{productsFor(s.id).map((p) => p.name).join(", ") || "—"}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => { setEditing(s); setForm({ name: s.name, company: s.company, phone: s.phone, email: s.email, address: s.address, notes: s.notes }); setError(""); setOpen(true); }}>Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(s.id)}>Delete</Button>
+                  <WriteGate>
+                    <Button variant="ghost" size="sm" onClick={() => { setEditing(s); setForm({ name: s.name, company: s.company, phone: s.phone, email: s.email, address: s.address, notes: s.notes }); setError(""); setOpen(true); }}>Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(s.id)}>Delete</Button>
+                  </WriteGate>
                 </TableCell>
               </TableRow>
             ))}

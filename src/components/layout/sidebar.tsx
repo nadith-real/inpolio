@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
-import { NAV_ITEMS } from "@/lib/nav";
+import { navFor } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useStore } from "@/lib/store";
 
 export function Sidebar({
   collapsed,
@@ -15,6 +16,9 @@ export function Sidebar({
   onToggle: () => void;
   onNavigate?: () => void;
 }) {
+  const { can } = useStore();
+  const items = navFor(can);
+
   return (
     <div className="flex h-full flex-col border-r bg-card">
       <div className={cn("flex items-center gap-2 border-b px-3 py-3", collapsed && "justify-center")}>
@@ -30,7 +34,7 @@ export function Sidebar({
       </div>
       <ScrollArea className="flex-1">
         <nav className="p-2" aria-label="Main">
-          {NAV_ITEMS.map((item) => {
+          {items.map((item) => {
             const link = (
               <NavLink
                 key={item.to}

@@ -224,3 +224,65 @@ export type AppData = {
 export type CollectionKey = Exclude<keyof AppData, "settings" | "meta">;
 
 export type DashboardRange = "today" | "7d" | "30d" | "90d" | "year";
+
+export const PERMISSIONS = [
+  "dashboard",
+  "customers",
+  "crm",
+  "sales",
+  "orders",
+  "invoices",
+  "payments",
+  "inventory",
+  "suppliers",
+  "appointments",
+  "tasks",
+  "automations",
+  "analytics",
+  "assistant",
+  "settings",
+  "admin",
+  "write",
+  "export",
+] as const;
+
+export type Permission = (typeof PERMISSIONS)[number];
+
+export type Role = {
+  id: string;
+  name: string;
+  description: string;
+  permissions: Permission[];
+  isSystem: boolean;
+};
+
+export type User = {
+  id: string;
+  username: string;
+  displayName: string;
+  passwordHash: string;
+  roleId: string;
+  businessIds: string[];
+  active: boolean;
+  createdAt: string;
+  lastLoginAt?: string;
+};
+
+export type Business = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
+
+export type Session = {
+  userId: string;
+  businessId: string;
+};
+
+export type WorkspaceRoot = {
+  version: number;
+  businesses: Business[];
+  users: User[];
+  roles: Role[];
+  workspaces: Record<string, AppData>;
+};

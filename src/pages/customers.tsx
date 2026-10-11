@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, formatDate, formatMoney, matchesQuery, nowIso, sortBy } from "@/lib/utils";
 import type { Customer, CustomerStatus } from "@/types";
@@ -65,9 +66,11 @@ export function CustomersPage() {
         title="Customers"
         description="CRM records stored on this device."
         actions={
-          <Button onClick={() => { setEditing(null); setForm(emptyCustomer()); setErrors({}); setOpen(true); }}>
-            <Plus /> New customer
-          </Button>
+          <WriteGate>
+            <Button onClick={() => { setEditing(null); setForm(emptyCustomer()); setErrors({}); setOpen(true); }}>
+              <Plus /> New customer
+            </Button>
+          </WriteGate>
         }
       />
       <div className="mb-3 flex flex-col gap-2 sm:flex-row">
@@ -118,16 +121,18 @@ export function CustomersPage() {
                 <TableCell className="hidden sm:table-cell">{formatDate(c.createdAt)}</TableCell>
                 <TableCell className="text-right">{formatMoney(c.totalSpent, data.settings.currency)}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => {
-                    setEditing(c);
-                    setForm({
-                      name: c.name, company: c.company, email: c.email, phone: c.phone, address: c.address,
-                      notes: c.notes, tags: c.tags.join(", "), status: c.status,
-                    });
-                    setErrors({});
-                    setOpen(true);
-                  }}>Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(c.id)}>Delete</Button>
+                  <WriteGate>
+                    <Button variant="ghost" size="sm" onClick={() => {
+                      setEditing(c);
+                      setForm({
+                        name: c.name, company: c.company, email: c.email, phone: c.phone, address: c.address,
+                        notes: c.notes, tags: c.tags.join(", "), status: c.status,
+                      });
+                      setErrors({});
+                      setOpen(true);
+                    }}>Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(c.id)}>Delete</Button>
+                  </WriteGate>
                 </TableCell>
               </TableRow>
             ))}

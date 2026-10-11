@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, nowIso } from "@/lib/utils";
 import type { Automation, AutomationAction, AutomationTrigger } from "@/types";
@@ -59,7 +60,11 @@ export function AutomationsPage() {
       <PageHeader
         title="Automations"
         description="Local WHEN → THEN rules. They run whenever data changes — no internet required."
-        actions={<Button onClick={() => { setForm({ name: "", trigger: "invoice.overdue", action: "create_task", actionTitle: "", actionBody: "" }); setError(""); setOpen(true); }}><Plus /> New automation</Button>}
+        actions={
+          <WriteGate>
+            <Button onClick={() => { setForm({ name: "", trigger: "invoice.overdue", action: "create_task", actionTitle: "", actionBody: "" }); setError(""); setOpen(true); }}><Plus /> New automation</Button>
+          </WriteGate>
+        }
       />
       {data.automations.length === 0 ? (
         <EmptyState
@@ -80,10 +85,12 @@ export function AutomationsPage() {
                   <p className="text-xs text-muted-foreground">{auto.actionTitle}</p>
                   {auto.isDemo ? <p className="mt-1 text-[10px] uppercase text-muted-foreground">Demo</p> : null}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Switch checked={auto.enabled} onCheckedChange={(v) => upsert("automations", { ...auto, enabled: v })} aria-label="Enable automation" />
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(auto.id)}>Delete</Button>
-                </div>
+                <WriteGate>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={auto.enabled} onCheckedChange={(v) => upsert("automations", { ...auto, enabled: v })} aria-label="Enable automation" />
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(auto.id)}>Delete</Button>
+                  </div>
+                </WriteGate>
               </CardContent>
             </Card>
           ))}

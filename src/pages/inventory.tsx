@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { EmptyState } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { inventoryValue, lowStockProducts, outOfStockProducts } from "@/lib/business";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, formatMoney, matchesQuery } from "@/lib/utils";
 import type { Product } from "@/types";
@@ -81,14 +82,16 @@ export function InventoryPage() {
         title="Inventory"
         description="Products, stock levels and supplier links."
         actions={
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => { setAdjust({ id: data.products[0]?.id ?? "", delta: 0, reason: "" }); setAdjustOpen(true); }}>
-              Adjust stock
-            </Button>
-            <Button onClick={() => { setEditing(null); setForm(emptyForm()); setErrors({}); setOpen(true); }}>
-              <Plus /> New product
-            </Button>
-          </div>
+          <WriteGate>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => { setAdjust({ id: data.products[0]?.id ?? "", delta: 0, reason: "" }); setAdjustOpen(true); }}>
+                Adjust stock
+              </Button>
+              <Button onClick={() => { setEditing(null); setForm(emptyForm()); setErrors({}); setOpen(true); }}>
+                <Plus /> New product
+              </Button>
+            </div>
+          </WriteGate>
         }
       />
       <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -135,17 +138,19 @@ export function InventoryPage() {
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">{formatMoney(p.sellingPrice, currency)}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => {
-                    setEditing(p);
-                    setForm({
-                      name: p.name, sku: p.sku, category: p.category, description: p.description,
-                      purchasePrice: p.purchasePrice, sellingPrice: p.sellingPrice, stock: p.stock,
-                      lowStockThreshold: p.lowStockThreshold, supplierId: p.supplierId,
-                    });
-                    setErrors({});
-                    setOpen(true);
-                  }}>Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(p.id)}>Delete</Button>
+                  <WriteGate>
+                    <Button variant="ghost" size="sm" onClick={() => {
+                      setEditing(p);
+                      setForm({
+                        name: p.name, sku: p.sku, category: p.category, description: p.description,
+                        purchasePrice: p.purchasePrice, sellingPrice: p.sellingPrice, stock: p.stock,
+                        lowStockThreshold: p.lowStockThreshold, supplierId: p.supplierId,
+                      });
+                      setErrors({});
+                      setOpen(true);
+                    }}>Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(p.id)}>Delete</Button>
+                  </WriteGate>
                 </TableCell>
               </TableRow>
             ))}

@@ -2,7 +2,7 @@
 
 Local-first business OS for small and medium companies.
 
-Inpolio runs entirely on your computer. There is no account, no cloud database and no telemetry. Open it in a browser on localhost and keep customers, sales, invoices, inventory and tasks in one place.
+Inpolio runs entirely on your computer. There is no cloud database and no telemetry. Accounts, passwords and business data stay in this browser. Open it on localhost and keep customers, sales, invoices, inventory and tasks in one place.
 
 ```
 ┌────────────────────────────┐
@@ -23,7 +23,10 @@ Inpolio runs entirely on your computer. There is no account, no cloud database a
 - Analytics from stored data only
 - Offline business assistant (deterministic answers from local records)
 - Global search (`Ctrl + K`) and local notifications
-- Export / import JSON backups and optional labelled demo data
+- Multiple businesses and local username/password users
+- Admin tab for businesses, users, roles and permissions
+- Export / import a single business or all businesses as JSON
+- Optional labelled demo data
 
 ## Requirements
 
@@ -126,16 +129,20 @@ PORT=8080 INPOLIO_NO_OPEN=1 npx inpolio
 
 ## First-time usage
 
-1. Open **Settings** and enter your business name, currency (default **LKR**) and tax rate.
-2. Optionally load **demo data** to explore the workspace. Demo rows are labelled and can be removed.
-3. Add products, then customers, then orders.
-4. Completing an order deducts stock.
-5. Create an invoice and record payments. Invoice status updates automatically.
-6. Use **Dashboard** and **Analytics** for live figures. Nothing is invented.
+1. On first launch, create an **owner** username and password. That account stays on this device only.
+2. Open **Settings** and enter your business name, currency (default **LKR**) and tax rate.
+3. Optionally load **demo data** to explore the workspace. Demo rows are labelled and can be removed.
+4. Add products, then customers, then orders.
+5. Completing an order deducts stock.
+6. Create an invoice and record payments. Invoice status updates automatically.
+7. Use **Admin** to add more businesses, users and roles. Switch business from the header.
+8. Use **Dashboard** and **Analytics** for live figures. Nothing is invented.
+
+Passwords are stored as PBKDF2 hashes in `localStorage`. There is no password recovery: if you forget the owner password, export a backup first if you can, then clear site data and set up again.
 
 ## Data and storage
 
-All records live in this browser's `localStorage` under `inpolio.data.v1`.
+Accounts and business records live in this browser's `localStorage` under `inpolio.workspace.v2` (older `inpolio.data.v1` backups are migrated on first load).
 
 - Data stays on the machine and browser you used.
 - Changing browsers, devices, or clearing site data will not carry records over.
@@ -143,10 +150,11 @@ All records live in this browser's `localStorage` under `inpolio.data.v1`.
 
 ### Backup and restore
 
-- **Export JSON** — Settings → Data → Export JSON
-- **Import JSON** — Settings → Data → Import JSON (replaces the current workspace after validation)
-- **Clear data** — removes business records, keeps settings
-- **Reset** — restores empty defaults
+- **Export this business** — Settings → Data
+- **Export all businesses** — Settings → Data (admins). Includes users, roles and every workspace
+- **Import JSON** — a single-business file replaces the current workspace; a full workspace file is admin-only
+- **Clear data** — removes records for the current business, keeps settings
+- **Reset** — restores empty defaults for the current business
 
 Invalid JSON, unknown shapes, duplicate IDs and missing fields are normalised or rejected instead of crashing.
 

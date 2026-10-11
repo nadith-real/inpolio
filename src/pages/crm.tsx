@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Field } from "@/components/shared/field";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, formatMoney, nowIso } from "@/lib/utils";
 import type { Lead, LeadStage } from "@/types";
@@ -60,7 +61,11 @@ export function CrmPage() {
       <PageHeader
         title="CRM"
         description="Sales pipeline. Drag is not required — use stage buttons to move leads."
-        actions={<Button onClick={() => setOpen(true)}><Plus /> New lead</Button>}
+        actions={
+          <WriteGate>
+            <Button onClick={() => setOpen(true)}><Plus /> New lead</Button>
+          </WriteGate>
+        }
       />
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {STAGES.map((stage) => {
@@ -80,18 +85,20 @@ export function CrmPage() {
                       <p className="text-xs">{formatMoney(lead.potentialValue, currency)}</p>
                       {lead.nextFollowUp ? <p className="text-[11px] text-muted-foreground">Follow-up {lead.nextFollowUp}</p> : null}
                       {lead.isDemo ? <p className="text-[10px] uppercase text-muted-foreground">Demo</p> : null}
-                      <div className="flex flex-wrap gap-1 pt-1">
-                        {STAGES.filter((s) => s !== stage).map((s) => (
-                          <button
-                            key={s}
-                            type="button"
-                            className="rounded border px-1.5 py-0.5 text-[10px] hover:bg-accent"
-                            onClick={() => move(lead, s)}
-                          >
-                            {LABELS[s]}
-                          </button>
-                        ))}
-                      </div>
+                      <WriteGate>
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {STAGES.filter((s) => s !== stage).map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              className="rounded border px-1.5 py-0.5 text-[10px] hover:bg-accent"
+                              onClick={() => move(lead, s)}
+                            >
+                              {LABELS[s]}
+                            </button>
+                          ))}
+                        </div>
+                      </WriteGate>
                     </CardContent>
                   </Card>
                 ))}

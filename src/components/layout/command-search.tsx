@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useStore } from "@/lib/store";
 
 export function CommandSearch({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const { data } = useStore();
+  const { data, can } = useStore();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
@@ -22,18 +22,21 @@ export function CommandSearch({ open, onOpenChange }: { open: boolean; onOpenCha
 
   const q = query.trim().toLowerCase();
   const results = useMemo(() => {
-    if (!q) return { customers: data.customers.slice(0, 5), leads: data.leads.slice(0, 5), orders: data.orders.slice(0, 5), products: data.products.slice(0, 5), invoices: data.invoices.slice(0, 5), appointments: data.appointments.slice(0, 5), tasks: data.tasks.slice(0, 5) };
+    const empty = { customers: [], leads: [], orders: [], products: [], invoices: [], appointments: [], tasks: [] };
     const has = (...vals: string[]) => vals.join(" ").toLowerCase().includes(q);
+    const take = <T,>(items: T[], allowed: boolean, filter: (item: T) => boolean) =>
+      allowed ? (q ? items.filter(filter) : items).slice(0, q ? 8 : 5) : [];
+    if (!q && !can("customers") && !can("crm") && !can("orders") && !can("inventory") && !can("invoices") && !can("appointments") && !can("tasks")) return empty;
     return {
-      customers: data.customers.filter((c) => has(c.name, c.company, c.email, c.phone)).slice(0, 8),
-      leads: data.leads.filter((l) => has(l.name, l.company, l.contact, l.email)).slice(0, 8),
-      orders: data.orders.filter((o) => has(o.orderNumber, o.notes)).slice(0, 8),
-      products: data.products.filter((p) => has(p.name, p.sku, p.category)).slice(0, 8),
-      invoices: data.invoices.filter((i) => has(i.invoiceNumber, i.notes)).slice(0, 8),
-      appointments: data.appointments.filter((a) => has(a.title, a.notes)).slice(0, 8),
-      tasks: data.tasks.filter((t) => has(t.title, t.description)).slice(0, 8),
+      customers: take(data.customers, can("customers"), (c) => has(c.name, c.company, c.email, c.phone)),
+      leads: take(data.leads, can("crm"), (l) => has(l.name, l.company, l.contact, l.email)),
+      orders: take(data.orders, can("orders"), (o) => has(o.orderNumber, o.notes)),
+      products: take(data.products, can("inventory"), (p) => has(p.name, p.sku, p.category)),
+      invoices: take(data.invoices, can("invoices"), (i) => has(i.invoiceNumber, i.notes)),
+      appointments: take(data.appointments, can("appointments"), (a) => has(a.title, a.notes)),
+      tasks: take(data.tasks, can("tasks"), (t) => has(t.title, t.description)),
     };
-  }, [q, data]);
+  }, [q, data, can]);
 
   const go = (to: string) => {
     onOpenChange(false);

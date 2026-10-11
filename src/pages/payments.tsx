@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, formatDate, formatMoney, matchesQuery, nowIso } from "@/lib/utils";
 import type { Payment, PaymentMethod } from "@/types";
@@ -63,7 +64,11 @@ export function PaymentsPage() {
       <PageHeader
         title="Payments"
         description="Record cash, bank, card or other payments. No payment gateways."
-        actions={<Button onClick={() => { setForm({ invoiceId: "", amount: 0, method: "cash", date: nowIso().slice(0, 10), reference: "", notes: "" }); setError(""); setOpen(true); }}><Plus /> Record payment</Button>}
+        actions={
+          <WriteGate>
+            <Button onClick={() => { setForm({ invoiceId: "", amount: 0, method: "cash", date: nowIso().slice(0, 10), reference: "", notes: "" }); setError(""); setOpen(true); }}><Plus /> Record payment</Button>
+          </WriteGate>
+        }
       />
       <Input className="mb-3 max-w-md" placeholder="Search payments…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search payments" />
       {rows.length === 0 ? (
@@ -89,7 +94,9 @@ export function PaymentsPage() {
                 <TableCell>{METHODS.find((m) => m.id === p.method)?.label ?? p.method}</TableCell>
                 <TableCell className="text-right">{formatMoney(p.amount, currency)}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(p.id)}>Delete</Button>
+                  <WriteGate>
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(p.id)}>Delete</Button>
+                  </WriteGate>
                 </TableCell>
               </TableRow>
             ))}

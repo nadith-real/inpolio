@@ -4,6 +4,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { formatDate, formatMoney } from "@/lib/utils";
 
@@ -30,9 +31,11 @@ export function OrderDetailPage() {
         description={customer?.name ?? "Unknown customer"}
         actions={
           <div className="flex gap-2">
-            {order.status !== "completed" ? (
-              <Button onClick={() => saveOrder({ ...order, status: "completed" }, order)}>Mark completed</Button>
-            ) : null}
+            <WriteGate>
+              {order.status !== "completed" ? (
+                <Button onClick={() => saveOrder({ ...order, status: "completed" }, order)}>Mark completed</Button>
+              ) : null}
+            </WriteGate>
             <Button variant="outline" asChild><Link to="/orders">All orders</Link></Button>
           </div>
         }

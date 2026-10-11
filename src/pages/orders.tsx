@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { calcLineTotals, createId, formatDate, formatMoney, matchesQuery, nextNumber, nowIso } from "@/lib/utils";
 import type { LineItem, Order, OrderStatus, PaymentStatus } from "@/types";
@@ -89,9 +90,11 @@ export function OrdersPage() {
         title="Orders"
         description="Completing an order deducts stock. Changing it away from completed restores stock."
         actions={
-          <Button onClick={() => { setEditing(null); setForm(emptyForm()); setErrors({}); setOpen(true); }}>
-            <Plus /> New order
-          </Button>
+          <WriteGate>
+            <Button onClick={() => { setEditing(null); setForm(emptyForm()); setErrors({}); setOpen(true); }}>
+              <Plus /> New order
+            </Button>
+          </WriteGate>
         }
       />
       <div className="mb-3 flex flex-col gap-2 sm:flex-row">
@@ -134,21 +137,23 @@ export function OrdersPage() {
                 <TableCell className="hidden md:table-cell"><StatusBadge value={o.paymentStatus} /></TableCell>
                 <TableCell className="text-right">{formatMoney(o.total, currency)}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => {
-                    setEditing(o);
-                    setForm({
-                      customerId: o.customerId,
-                      items: o.items,
-                      discount: o.discount,
-                      notes: o.notes,
-                      status: o.status,
-                      paymentStatus: o.paymentStatus,
-                      date: o.date.slice(0, 10),
-                    });
-                    setErrors({});
-                    setOpen(true);
-                  }}>Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(o.id)}>Delete</Button>
+                  <WriteGate>
+                    <Button variant="ghost" size="sm" onClick={() => {
+                      setEditing(o);
+                      setForm({
+                        customerId: o.customerId,
+                        items: o.items,
+                        discount: o.discount,
+                        notes: o.notes,
+                        status: o.status,
+                        paymentStatus: o.paymentStatus,
+                        date: o.date.slice(0, 10),
+                      });
+                      setErrors({});
+                      setOpen(true);
+                    }}>Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(o.id)}>Delete</Button>
+                  </WriteGate>
                 </TableCell>
               </TableRow>
             ))}

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, todayIsoDate } from "@/lib/utils";
 import type { Appointment, AppointmentStatus } from "@/types";
@@ -74,7 +75,11 @@ export function AppointmentsPage() {
       <PageHeader
         title="Appointments"
         description="Local calendar. Reminders appear as badges — no messaging APIs."
-        actions={<Button onClick={() => { setEditing(null); setForm(empty()); setError(""); setOpen(true); }}><Plus /> New appointment</Button>}
+        actions={
+          <WriteGate>
+            <Button onClick={() => { setEditing(null); setForm(empty()); setError(""); setOpen(true); }}><Plus /> New appointment</Button>
+          </WriteGate>
+        }
       />
       <Tabs defaultValue="calendar">
         <TabsList>
@@ -137,13 +142,15 @@ export function AppointmentsPage() {
                     <TableCell>{a.date} {a.startTime}–{a.endTime}</TableCell>
                     <TableCell><StatusBadge value={a.status} /></TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" onClick={() => {
-                        setEditing(a);
-                        setForm({ customerId: a.customerId, title: a.title, date: a.date, startTime: a.startTime, endTime: a.endTime, status: a.status, notes: a.notes });
-                        setError("");
-                        setOpen(true);
-                      }}>Edit</Button>
-                      <Button variant="ghost" size="sm" onClick={() => setDelId(a.id)}>Delete</Button>
+                      <WriteGate>
+                        <Button variant="ghost" size="sm" onClick={() => {
+                          setEditing(a);
+                          setForm({ customerId: a.customerId, title: a.title, date: a.date, startTime: a.startTime, endTime: a.endTime, status: a.status, notes: a.notes });
+                          setError("");
+                          setOpen(true);
+                        }}>Edit</Button>
+                        <Button variant="ghost" size="sm" onClick={() => setDelId(a.id)}>Delete</Button>
+                      </WriteGate>
                     </TableCell>
                   </TableRow>
                 ))}

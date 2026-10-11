@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { calcLineTotals, createId, formatDate, formatMoney, matchesQuery, nextNumber, nowIso, todayIsoDate } from "@/lib/utils";
 import type { Invoice, LineItem } from "@/types";
@@ -99,9 +100,11 @@ export function InvoicesPage() {
         title="Invoices"
         description="Create, duplicate and print invoices. Status updates when payments are recorded."
         actions={
-          <Button onClick={() => { setEditing(null); setForm(emptyForm()); setErrors({}); setOpen(true); }}>
-            <Plus /> New invoice
-          </Button>
+          <WriteGate>
+            <Button onClick={() => { setEditing(null); setForm(emptyForm()); setErrors({}); setOpen(true); }}>
+              <Plus /> New invoice
+            </Button>
+          </WriteGate>
         }
       />
       <div className="mb-3 flex flex-col gap-2 sm:flex-row">
@@ -143,21 +146,23 @@ export function InvoicesPage() {
                 <TableCell><StatusBadge value={i.paymentStatus} /></TableCell>
                 <TableCell className="text-right">{formatMoney(i.total, currency)}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" onClick={() => {
-                    setEditing(i);
-                    setForm({
-                      customerId: i.customerId,
-                      items: i.items,
-                      discount: i.discount,
-                      notes: i.notes,
-                      issueDate: i.issueDate.slice(0, 10),
-                      dueDate: i.dueDate,
-                    });
-                    setErrors({});
-                    setOpen(true);
-                  }}>Edit</Button>
-                  <Button variant="ghost" size="sm" onClick={() => duplicate(i)}>Duplicate</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDelId(i.id)}>Delete</Button>
+                  <WriteGate>
+                    <Button variant="ghost" size="sm" onClick={() => {
+                      setEditing(i);
+                      setForm({
+                        customerId: i.customerId,
+                        items: i.items,
+                        discount: i.discount,
+                        notes: i.notes,
+                        issueDate: i.issueDate.slice(0, 10),
+                        dueDate: i.dueDate,
+                      });
+                      setErrors({});
+                      setOpen(true);
+                    }}>Edit</Button>
+                    <Button variant="ghost" size="sm" onClick={() => duplicate(i)}>Duplicate</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDelId(i.id)}>Delete</Button>
+                  </WriteGate>
                 </TableCell>
               </TableRow>
             ))}
