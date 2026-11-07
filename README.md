@@ -13,6 +13,7 @@ Inpolio runs entirely on your computer. There is no cloud database and no teleme
 
 ## Features
 
+- Light and dark Business OS interface with grouped navigation
 - Dashboard with live revenue, profit, outstanding invoices and alerts
 - Customers / CRM with statuses, tags and a sales pipeline
 - Orders that update inventory when completed
@@ -23,6 +24,7 @@ Inpolio runs entirely on your computer. There is no cloud database and no teleme
 - Analytics from stored data only
 - Offline business assistant (deterministic answers from local records)
 - Global search (`Ctrl + K`) and local notifications
+- Optional Telegram alerts for new in-app notifications (admin)
 - Multiple businesses and local username/password users
 - Admin tab for businesses, users, roles and permissions
 - Export / import a single business or all businesses as JSON
@@ -34,7 +36,7 @@ Inpolio runs entirely on your computer. There is no cloud database and no teleme
 - A modern browser (Firefox, Chrome, Edge, or Safari)
 - Git (only if you install from GitHub)
 
-No Docker, no database server, and no internet connection after install.
+No Docker and no database server. After install the app runs offline. Optional Telegram alerts need internet.
 
 ## Installation for public users
 
@@ -136,7 +138,8 @@ PORT=8080 INPOLIO_NO_OPEN=1 npx inpolio
 5. Completing an order deducts stock.
 6. Create an invoice and record payments. Invoice status updates automatically.
 7. Use **Admin** to add more businesses, users and roles. Switch business from the header.
-8. Use **Dashboard** and **Analytics** for live figures. Nothing is invented.
+8. Admins can optionally enable **Telegram notifications** in Settings (bot token + chat ID). Only alerts created after enable are sent.
+9. Use **Dashboard** and **Analytics** for live figures. Nothing is invented.
 
 Passwords are stored as PBKDF2 hashes in `localStorage`. There is no password recovery: if you forget the owner password, export a backup first if you can, then clear site data and set up again.
 
@@ -159,6 +162,18 @@ Accounts and business records live in this browser's `localStorage` under `inpol
 Invalid JSON, unknown shapes, duplicate IDs and missing fields are normalised or rejected instead of crashing.
 
 Export regularly. Clearing site data in the browser also deletes Inpolio records.
+
+## Telegram notifications
+
+Telegram is optional and admin-only. The bot token and chat ID are stored in this browser with the rest of the workspace.
+
+1. Create a bot with [@BotFather](https://t.me/BotFather) and copy the token.
+2. Send a message to the bot, then copy the chat ID.
+3. Open **Settings → Telegram notifications**, paste the token and chat ID, and send a test message.
+
+New in-app alerts are forwarded after Telegram is enabled. Existing notifications are not replayed. Failed sends stop until you save the settings again.
+
+The local Vite / preview server proxies `/telegram` to `https://api.telegram.org` so the browser can call the Bot API.
 
 ## Updating
 
@@ -211,6 +226,7 @@ src/
     automation/   WHEN → THEN engine
     assistant/    AIProvider + local data answers
     export/       Backup/restore
+    telegram.ts   Optional Telegram Bot API helper
   hooks/
   types/
 cli/              Local `inpolio` command

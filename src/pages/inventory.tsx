@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { inventoryValue, lowStockProducts, outOfStockProducts } from "@/lib/business";
 import { WriteGate } from "@/components/auth/write-gate";
@@ -113,6 +114,7 @@ export function InventoryPage() {
       {rows.length === 0 ? (
         <EmptyState icon={Package} title="No products" description="Add products to sell and track stock." />
       ) : (
+        <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -156,6 +158,7 @@ export function InventoryPage() {
             ))}
           </TableBody>
         </Table>
+        </Card>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>

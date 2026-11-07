@@ -57,7 +57,18 @@ export default function App() {
           </Route>
         </Route>
       </Routes>
-      <Toaster richColors position="bottom-right" />
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          className: "font-sans",
+          style: {
+            fontFamily: "Montserrat, system-ui, sans-serif",
+            borderRadius: "0.5rem",
+            border: "1px solid var(--color-border)",
+            boxShadow: "none",
+          },
+        }}
+      />
     </>
   );
 }

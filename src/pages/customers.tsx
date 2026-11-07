@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, formatDate, formatMoney, matchesQuery, nowIso, sortBy } from "@/lib/utils";
@@ -96,6 +97,7 @@ export function CustomersPage() {
       {rows.length === 0 ? (
         <EmptyState icon={Users} title="No customers" description="Add a customer or load demo data from Settings." />
       ) : (
+        <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -138,6 +140,7 @@ export function CustomersPage() {
             ))}
           </TableBody>
         </Table>
+        </Card>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>

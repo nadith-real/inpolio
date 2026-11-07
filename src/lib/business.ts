@@ -106,7 +106,14 @@ export function mergeDemo(data: AppData, demo: AppData): AppData {
     appointments: [...demo.appointments, ...without.appointments],
     tasks: [...demo.tasks, ...without.tasks],
     automations: [...demo.automations, ...without.automations],
-    settings: data.settings.businessName === "Inpolio" ? demo.settings : data.settings,
+    settings: {
+      ...(data.settings.businessName === "Inpolio" ? demo.settings : data.settings),
+      telegramEnabled: data.settings.telegramEnabled,
+      telegramBotToken: data.settings.telegramBotToken,
+      telegramChatId: data.settings.telegramChatId,
+      telegramEnabledAt: data.settings.telegramEnabledAt,
+      telegramLastError: data.settings.telegramLastError,
+    },
     meta: { ...without.meta, demoLoaded: true },
   };
 }

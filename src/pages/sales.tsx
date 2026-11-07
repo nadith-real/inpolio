@@ -49,7 +49,7 @@ export function SalesPage() {
               <TableBody>
                 {recent.map((o) => (
                   <TableRow key={o.id}>
-                    <TableCell><Link className="hover:underline" to={`/orders/${o.id}`}>{o.orderNumber}</Link></TableCell>
+                     <TableCell><Link className="font-medium hover:underline" to={`/orders/${o.id}`}>{o.orderNumber}</Link></TableCell>
                     <TableCell>{name(o.customerId)}</TableCell>
                     <TableCell>{formatDate(o.date)}</TableCell>
                     <TableCell><StatusBadge value={o.status} /></TableCell>

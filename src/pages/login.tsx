@@ -48,69 +48,75 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-full items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 flex flex-col items-center text-center">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-primary text-sm font-semibold tracking-wide text-primary-foreground">
             IN
           </div>
-          <CardTitle>{setupNeeded ? "Create your owner account" : "Sign in to Inpolio"}</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            {setupNeeded
-              ? "Inpolio stays on this device. Choose a username and password to protect your data."
-              : "Use the username and password for this browser workspace."}
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form className="grid gap-3" onSubmit={(e) => void onSubmit(e)}>
-            {setupNeeded ? (
-              <Field label="Business name" htmlFor="login-biz">
-                <Input id="login-biz" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="My business" autoComplete="organization" />
-              </Field>
-            ) : null}
-            <Field label="Username" htmlFor="login-user">
-              <Input
-                id="login-user"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                autoComplete="username"
-                autoFocus
-                required
-              />
-            </Field>
-            {setupNeeded ? (
-              <Field label="Display name" htmlFor="login-display">
-                <Input id="login-display" value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="name" placeholder="Optional" />
-              </Field>
-            ) : null}
-            <Field label="Password" htmlFor="login-pass">
-              <Input
-                id="login-pass"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete={setupNeeded ? "new-password" : "current-password"}
-                required
-              />
-            </Field>
-            {setupNeeded ? (
-              <Field label="Confirm password" htmlFor="login-confirm">
+          <p className="text-base font-semibold tracking-tight">Inpolio</p>
+          <p className="text-xs text-muted-foreground">Your business. One place.</p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>{setupNeeded ? "Create your owner account" : "Sign in"}</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {setupNeeded
+                ? "Inpolio stays on this device. Choose a username and password to protect your data."
+                : "Use the username and password for this browser workspace."}
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form className="grid gap-3" onSubmit={(e) => void onSubmit(e)}>
+              {setupNeeded ? (
+                <Field label="Business name" htmlFor="login-biz">
+                  <Input id="login-biz" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="My business" autoComplete="organization" />
+                </Field>
+              ) : null}
+              <Field label="Username" htmlFor="login-user">
                 <Input
-                  id="login-confirm"
-                  type="password"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  autoComplete="new-password"
+                  id="login-user"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  autoComplete="username"
+                  autoFocus
                   required
                 />
               </Field>
-            ) : null}
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
-            <Button type="submit" disabled={busy}>
-              {busy ? "Please wait…" : setupNeeded ? "Create account" : "Sign in"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              {setupNeeded ? (
+                <Field label="Display name" htmlFor="login-display">
+                  <Input id="login-display" value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="name" placeholder="Optional" />
+                </Field>
+              ) : null}
+              <Field label="Password" htmlFor="login-pass">
+                <Input
+                  id="login-pass"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={setupNeeded ? "new-password" : "current-password"}
+                  required
+                />
+              </Field>
+              {setupNeeded ? (
+                <Field label="Confirm password" htmlFor="login-confirm">
+                  <Input
+                    id="login-confirm"
+                    type="password"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    autoComplete="new-password"
+                    required
+                  />
+                </Field>
+              ) : null}
+              {error ? <p className="text-sm text-destructive">{error}</p> : null}
+              <Button type="submit" className="mt-1" disabled={busy}>
+                {busy ? "Please wait…" : setupNeeded ? "Create account" : "Sign in"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

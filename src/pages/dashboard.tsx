@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle, Calendar, LayoutDashboard, Package, Receipt, ShoppingCart, TrendingUp, Users, Wallet } from "lucide-react";
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { AlertTriangle, Calendar, CheckSquare, LayoutDashboard, Package, Receipt, ShoppingCart, TrendingUp, Users, Wallet } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -50,9 +50,9 @@ export function DashboardPage() {
         title="Dashboard"
         description="Live figures from data stored on this computer."
         actions={
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap rounded-md border border-border p-0.5">
             {RANGES.map((r) => (
-              <Button key={r.id} size="sm" variant={range === r.id ? "default" : "outline"} onClick={() => setRange(r.id)}>
+              <Button key={r.id} size="sm" variant={range === r.id ? "secondary" : "ghost"} onClick={() => setRange(r.id)}>
                 {r.label}
               </Button>
             ))}
@@ -70,6 +70,7 @@ export function DashboardPage() {
               <Link to="/settings">Open settings</Link>
             </Button>
           }
+          className="mb-5"
         />
       ) : null}
 
@@ -83,12 +84,14 @@ export function DashboardPage() {
       </div>
 
       {alerts.length ? (
-        <Card className="mt-4 border-amber-300/70">
-          <CardContent className="flex items-start gap-2 p-4 text-sm">
-            <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-600" />
+        <Card className="mt-4">
+          <CardContent className="flex items-start gap-3 p-4 text-sm">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
+              <AlertTriangle className="h-4 w-4" />
+            </div>
             <div>
               <p className="font-medium">Business alerts</p>
-              <p className="text-muted-foreground">{alerts.join(" · ")}</p>
+              <p className="mt-0.5 text-muted-foreground">{alerts.join(" · ")}</p>
             </div>
           </CardContent>
         </Card>
@@ -105,10 +108,20 @@ export function DashboardPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={snap.revenueByDay}>
-                  <XAxis dataKey="date" tick={{ fontSize: 11 }} hide={snap.revenueByDay.length > 20} />
-                  <YAxis tick={{ fontSize: 11 }} width={48} />
-                  <Tooltip formatter={(v: number) => formatMoney(v, currency)} />
-                  <Area type="monotone" dataKey="revenue" stroke="currentColor" fill="currentColor" fillOpacity={0.12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "currentColor" }} className="text-muted-foreground" hide={snap.revenueByDay.length > 20} />
+                  <YAxis tick={{ fontSize: 11, fill: "currentColor" }} className="text-muted-foreground" width={48} />
+                  <Tooltip
+                    formatter={(v: number) => formatMoney(v, currency)}
+                    contentStyle={{
+                      background: "var(--color-popover)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "0.375rem",
+                      fontSize: "12px",
+                      boxShadow: "none",
+                    }}
+                  />
+                  <Area type="monotone" dataKey="revenue" stroke="currentColor" fill="currentColor" fillOpacity={0.08} strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
@@ -118,19 +131,21 @@ export function DashboardPage() {
           <CardHeader>
             <CardTitle>Today</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
+          <CardContent className="space-y-4 text-sm">
             <div>
-              <p className="mb-1 flex items-center gap-1 text-xs font-medium uppercase text-muted-foreground">
-                <Calendar className="h-3 w-3" /> Appointments
+              <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <Calendar className="h-3.5 w-3.5" /> Appointments
               </p>
               {todayApts.length ? todayApts.map((a) => (
-                <p key={a.id}>{a.startTime} {a.title}</p>
+                <p key={a.id} className="py-0.5">{a.startTime} {a.title}</p>
               )) : <p className="text-muted-foreground">None</p>}
             </div>
             <div>
-              <p className="mb-1 text-xs font-medium uppercase text-muted-foreground">Tasks due</p>
+              <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <CheckSquare className="h-3.5 w-3.5" /> Tasks due
+              </p>
               {todayTasks.length ? todayTasks.map((t) => (
-                <p key={t.id}>{t.title}</p>
+                <p key={t.id} className="py-0.5">{t.title}</p>
               )) : <p className="text-muted-foreground">None</p>}
             </div>
           </CardContent>
@@ -139,7 +154,7 @@ export function DashboardPage() {
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle>Recent orders</CardTitle>
             <Button variant="link" size="sm" asChild><Link to="/orders">View all</Link></Button>
           </CardHeader>
@@ -159,7 +174,7 @@ export function DashboardPage() {
                 <TableBody>
                   {recentOrders.map((o) => (
                     <TableRow key={o.id}>
-                      <TableCell><Link className="hover:underline" to={`/orders/${o.id}`}>{o.orderNumber}</Link></TableCell>
+                      <TableCell><Link className="font-medium hover:underline" to={`/orders/${o.id}`}>{o.orderNumber}</Link></TableCell>
                       <TableCell>{customerName(o.customerId)}</TableCell>
                       <TableCell><StatusBadge value={o.status} /></TableCell>
                       <TableCell className="text-right">{formatMoney(o.total, currency)}</TableCell>
@@ -171,8 +186,8 @@ export function DashboardPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Outstanding payments</CardTitle>
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardTitle>Outstanding invoices</CardTitle>
             <Button variant="link" size="sm" asChild><Link to="/invoices">View all</Link></Button>
           </CardHeader>
           <CardContent>
@@ -191,7 +206,7 @@ export function DashboardPage() {
                 <TableBody>
                   {outstanding.map((i) => (
                     <TableRow key={i.id}>
-                      <TableCell><Link className="hover:underline" to={`/invoices/${i.id}`}>{i.invoiceNumber}</Link></TableCell>
+                      <TableCell><Link className="font-medium hover:underline" to={`/invoices/${i.id}`}>{i.invoiceNumber}</Link></TableCell>
                       <TableCell>{formatDate(i.dueDate)}</TableCell>
                       <TableCell><StatusBadge value={i.paymentStatus} /></TableCell>
                       <TableCell className="text-right">{formatMoney(i.total, currency)}</TableCell>
@@ -205,7 +220,7 @@ export function DashboardPage() {
       </div>
 
       <Card className="mt-4">
-        <CardHeader className="flex-row items-center justify-between">
+        <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle>Low-stock products</CardTitle>
           <Button variant="link" size="sm" asChild><Link to="/inventory">Inventory</Link></Button>
         </CardHeader>
@@ -225,7 +240,7 @@ export function DashboardPage() {
               <TableBody>
                 {low.map((p) => (
                   <TableRow key={p.id}>
-                    <TableCell>{p.name}</TableCell>
+                    <TableCell className="font-medium">{p.name}</TableCell>
                     <TableCell>{p.sku || "—"}</TableCell>
                     <TableCell>{p.stock}</TableCell>
                     <TableCell>{p.lowStockThreshold}</TableCell>

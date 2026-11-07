@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, formatDate, formatMoney, matchesQuery, nowIso } from "@/lib/utils";
@@ -74,6 +75,7 @@ export function PaymentsPage() {
       {rows.length === 0 ? (
         <EmptyState icon={Receipt} title="No payments" description="Record a payment against an invoice." />
       ) : (
+        <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -102,6 +104,7 @@ export function PaymentsPage() {
             ))}
           </TableBody>
         </Table>
+        </Card>
       )}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

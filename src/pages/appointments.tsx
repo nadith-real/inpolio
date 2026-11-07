@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, todayIsoDate } from "@/lib/utils";
@@ -100,15 +101,20 @@ export function AppointmentsPage() {
               const iso = d ? `${cursor.y}-${String(cursor.m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}` : "";
               const items = d ? data.appointments.filter((a) => a.date === iso) : [];
               return (
-                <div key={i} className="min-h-20 rounded-md border bg-card p-1 text-left">
+                <div key={i} className="min-h-20 rounded-md border border-border bg-card p-1 text-left">
                   <p className="text-xs text-muted-foreground">{d ?? ""}</p>
                   {items.map((a) => (
-                    <button key={a.id} type="button" className="mt-0.5 block w-full truncate rounded bg-muted px-1 text-[11px]" onClick={() => {
-                      setEditing(a);
-                      setForm({ customerId: a.customerId, title: a.title, date: a.date, startTime: a.startTime, endTime: a.endTime, status: a.status, notes: a.notes });
-                      setError("");
-                      setOpen(true);
-                    }}>
+                    <button
+                      key={a.id}
+                      type="button"
+                      className="mt-0.5 block w-full truncate rounded-md bg-secondary px-1 text-[11px] hover:bg-accent"
+                      onClick={() => {
+                        setEditing(a);
+                        setForm({ customerId: a.customerId, title: a.title, date: a.date, startTime: a.startTime, endTime: a.endTime, status: a.status, notes: a.notes });
+                        setError("");
+                        setOpen(true);
+                      }}
+                    >
                       {a.startTime} {a.title}
                     </button>
                   ))}
@@ -121,6 +127,7 @@ export function AppointmentsPage() {
           {data.appointments.length === 0 ? (
             <EmptyState icon={CalendarIcon} title="No appointments" description="Schedule a meeting with a customer." />
           ) : (
+            <Card>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -156,6 +163,7 @@ export function AppointmentsPage() {
                 ))}
               </TableBody>
             </Table>
+            </Card>
           )}
         </TabsContent>
       </Tabs>

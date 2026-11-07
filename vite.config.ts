@@ -14,10 +14,24 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     allowedHosts: [".monkeycode-ai.live"],
+    proxy: {
+      "/telegram": {
+        target: "https://api.telegram.org",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/telegram/, ""),
+      },
+    },
   },
   preview: {
     host: "0.0.0.0",
     port: 4173,
     allowedHosts: [".monkeycode-ai.live"],
+    proxy: {
+      "/telegram": {
+        target: "https://api.telegram.org",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/telegram/, ""),
+      },
+    },
   },
 });

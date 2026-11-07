@@ -234,6 +234,7 @@ export function normalizeNotification(raw: Record<string, unknown>): AppNotifica
     relatedId: asString(raw.relatedId) || undefined,
     relatedType: asString(raw.relatedType) || undefined,
     signature: asString(raw.signature, asString(raw.id)),
+    telegramSent: asBool(raw.telegramSent),
   };
 }
 
@@ -275,6 +276,11 @@ export function normalizeAppData(raw: unknown): AppData {
       appearance: ["light", "dark", "system"].includes(asString(settingsRaw.appearance))
         ? (settingsRaw.appearance as AppData["settings"]["appearance"])
         : "system",
+      telegramEnabled: asBool(settingsRaw.telegramEnabled),
+      telegramBotToken: asString(settingsRaw.telegramBotToken),
+      telegramChatId: asString(settingsRaw.telegramChatId),
+      telegramEnabledAt: asString(settingsRaw.telegramEnabledAt),
+      telegramLastError: asString(settingsRaw.telegramLastError),
     },
     meta: {
       demoLoaded: asBool((data.meta as Record<string, unknown> | undefined)?.demoLoaded),

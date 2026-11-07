@@ -192,6 +192,7 @@ export type AppNotification = {
   relatedId?: string;
   relatedType?: string;
   signature: string;
+  telegramSent?: boolean;
 };
 
 export type BusinessSettings = {
@@ -203,6 +204,11 @@ export type BusinessSettings = {
   currency: string;
   taxRate: number;
   appearance: Appearance;
+  telegramEnabled: boolean;
+  telegramBotToken: string;
+  telegramChatId: string;
+  telegramEnabledAt: string;
+  telegramLastError: string;
 };
 
 export type AppData = {

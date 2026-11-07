@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, todayIsoDate } from "@/lib/utils";
@@ -58,6 +59,7 @@ export function TasksPage() {
     items.length === 0 ? (
       <p className="text-sm text-muted-foreground">Nothing here.</p>
     ) : (
+      <Card>
       <Table>
         <TableHeader>
           <TableRow>
@@ -100,6 +102,7 @@ export function TasksPage() {
           ))}
         </TableBody>
       </Table>
+      </Card>
     );
 
   return (

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { createId, matchesQuery } from "@/lib/utils";
@@ -55,6 +56,7 @@ export function SuppliersPage() {
       {rows.length === 0 ? (
         <EmptyState icon={Truck} title="No suppliers" description="Add a supplier and link products in Inventory." />
       ) : (
+        <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -85,6 +87,7 @@ export function SuppliersPage() {
             ))}
           </TableBody>
         </Table>
+        </Card>
       )}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

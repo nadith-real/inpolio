@@ -35,7 +35,7 @@ export function AssistantPage() {
         title="Business Assistant"
         description={`Local provider: ${defaultProvider.name}. Optional local models can implement the AIProvider interface later.`}
       />
-      <div className="mb-3 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         {SUGGESTED_QUERIES.map((q) => (
           <Button key={q} size="sm" variant="outline" onClick={() => ask(q)}>
             {q}
@@ -43,10 +43,20 @@ export function AssistantPage() {
         ))}
       </div>
       <Card>
-        <CardContent className="space-y-3 p-4">
+        <CardContent className="space-y-4 p-5">
           <div className="max-h-[50vh] space-y-3 overflow-y-auto">
             {messages.map((m) => (
-              <div key={m.id} className={m.role === "user" ? "ml-8 rounded-md bg-secondary p-3 text-sm" : "mr-8 rounded-md border p-3 text-sm whitespace-pre-wrap"}>
+              <div
+                key={m.id}
+                className={
+                  m.role === "user"
+                    ? "ml-8 rounded-md bg-secondary p-3 text-sm"
+                    : "mr-8 rounded-md border border-border bg-card p-3 text-sm whitespace-pre-wrap"
+                }
+              >
+                <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {m.role === "user" ? "You" : "Assistant"}
+                </p>
                 {m.content}
               </div>
             ))}

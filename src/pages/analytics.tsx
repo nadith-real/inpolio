@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
@@ -30,29 +30,29 @@ export function AnalyticsPage() {
         title="Analytics"
         description="Figures computed from stored orders, invoices, payments and products."
         actions={
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap rounded-md border border-border p-0.5">
             {RANGES.map((r) => (
-              <Button key={r.id} size="sm" variant={range === r.id ? "default" : "outline"} onClick={() => setRange(r.id)}>
+              <Button key={r.id} size="sm" variant={range === r.id ? "secondary" : "ghost"} onClick={() => setRange(r.id)}>
                 {r.label}
               </Button>
             ))}
           </div>
         }
       />
-      <h2 className="mb-2 text-sm font-semibold">Sales</h2>
+      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sales</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Revenue" value={formatMoney(snap.revenue, currency)} />
         <StatCard label="Orders" value={String(snap.orders)} />
         <StatCard label="Completed" value={String(snap.completedOrders)} />
         <StatCard label="Avg order value" value={formatMoney(snap.averageOrderValue, currency)} />
       </div>
-      <h2 className="mb-2 mt-6 text-sm font-semibold">Customers</h2>
+      <h2 className="mb-2 mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Customers</h2>
       <div className="grid gap-3 sm:grid-cols-3">
         <StatCard label="Total customers" value={String(snap.customers)} />
         <StatCard label="New in range" value={String(snap.newCustomers)} />
         <StatCard label="Returning (prior spend)" value={String(snap.returningCustomers)} />
       </div>
-      <h2 className="mb-2 mt-6 text-sm font-semibold">Finance</h2>
+      <h2 className="mb-2 mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Finance</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Revenue" value={formatMoney(snap.revenue, currency)} />
         <StatCard label="Costs" value={formatMoney(snap.costs, currency)} />
@@ -70,10 +70,19 @@ export function AnalyticsPage() {
                 <div className="mb-4 h-48">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={snap.bestSellers}>
-                      <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} hide={snap.bestSellers.length > 4} />
-                      <YAxis tick={{ fontSize: 11 }} width={32} />
-                      <Tooltip />
-                      <Bar dataKey="quantity" fill="currentColor" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "currentColor" }} className="text-muted-foreground" interval={0} hide={snap.bestSellers.length > 4} />
+                      <YAxis tick={{ fontSize: 11, fill: "currentColor" }} className="text-muted-foreground" width={32} />
+                      <Tooltip
+                        contentStyle={{
+                          background: "var(--color-popover)",
+                          border: "1px solid var(--color-border)",
+                          borderRadius: "0.375rem",
+                          fontSize: "12px",
+                          boxShadow: "none",
+                        }}
+                      />
+                      <Bar dataKey="quantity" fill="currentColor" fillOpacity={0.8} radius={[2, 2, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

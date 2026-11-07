@@ -26,6 +26,7 @@ import {
   ownerCount,
 } from "@/lib/auth/permissions";
 import { createId, nowIso } from "@/lib/utils";
+import { formatTelegramMessage, isTelegramConfigured, sendTelegramMessage } from "@/lib/telegram";
 
 const adapter = new LocalStorageAdapter();
 const repo = new AppRepository(adapter);
@@ -91,6 +92,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const skipSave = useRef(true);
   const rootRef = useRef(root);
   const sessionRef = useRef(session);
+  const telegramBusy = useRef(false);
+  const telegramAttempted = useRef(new Set<string>());
+  const telegramConfigKey = useRef("");
   rootRef.current = root;
   sessionRef.current = session;
 
@@ -126,6 +130,63 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!ready) return;
     saveSession(adapter, session);
   }, [session, ready]);
+
+  useEffect(() => {
+    if (!ready || !session) return;
+    const data = root.workspaces[session.businessId];
+    if (!data || !isTelegramConfigured(data.settings) || telegramBusy.current) return;
+    if (data.settings.telegramLastError) return;
+    const configKey = `${session.businessId}:${data.settings.telegramBotToken}:${data.settings.telegramChatId}`;
+    if (telegramConfigKey.current !== configKey) {
+      telegramConfigKey.current = configKey;
+      telegramAttempted.current = new Set();
+    }
+    const enabledAt = data.settings.telegramEnabledAt;
+    const pending = data.notifications.filter((n) => !n.telegramSent && !telegramAttempted.current.has(n.id));
+    if (!pending.length) return;
+    const { telegramBotToken, telegramChatId, businessName } = data.settings;
+    telegramBusy.current = true;
+    void (async () => {
+      const sentIds: string[] = [];
+      let lastError = "";
+      for (const n of pending) {
+        if (enabledAt && n.createdAt < enabledAt) {
+          telegramAttempted.current.add(n.id);
+          sentIds.push(n.id);
+          continue;
+        }
+        const result = await sendTelegramMessage(
+          telegramBotToken,
+          telegramChatId,
+          formatTelegramMessage(businessName, n.title, n.message),
+        );
+        if (result.ok) {
+          telegramAttempted.current.add(n.id);
+          sentIds.push(n.id);
+        } else {
+          lastError = result.error;
+          break;
+        }
+      }
+      const businessId = session.businessId;
+      setRoot((prev) => {
+        const current = prev.workspaces[businessId];
+        if (!current) return prev;
+        return {
+          ...prev,
+          workspaces: {
+            ...prev.workspaces,
+            [businessId]: {
+              ...current,
+              settings: { ...current.settings, telegramLastError: lastError },
+              notifications: current.notifications.map((n) => (sentIds.includes(n.id) ? { ...n, telegramSent: true } : n)),
+            },
+          },
+        };
+      });
+      telegramBusy.current = false;
+    })();
+  }, [ready, session, root]);
 
   const currentUser = useCallback((): User | null => {
     const s = sessionRef.current;

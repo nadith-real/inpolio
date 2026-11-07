@@ -29,27 +29,27 @@ export function AppShell() {
           <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
         </aside>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent side="left" className="p-0 w-64">
+          <SheetContent side="left" className="w-64 p-0">
             <Sidebar collapsed={false} onToggle={() => setMobileOpen(false)} onNavigate={() => setMobileOpen(false)} />
           </SheetContent>
         </Sheet>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 items-center gap-2 border-b px-3 no-print">
+          <header className="flex h-14 items-center gap-2 border-b border-border px-3 no-print md:px-5">
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(true)} aria-label="Open menu">
               <Menu />
             </Button>
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border bg-background px-3 text-left text-sm text-muted-foreground md:max-w-md"
+              className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:bg-accent md:max-w-sm"
             >
               <Search className="h-4 w-4" />
               <span className="truncate">Search…</span>
-              <kbd className="ml-auto hidden rounded border px-1.5 text-[10px] sm:inline">Ctrl K</kbd>
+              <kbd className="ml-auto hidden rounded border border-border px-1.5 text-[10px] font-medium sm:inline">Ctrl K</kbd>
             </button>
             {accessibleBusinesses.length > 1 && currentBusiness ? (
               <Select value={currentBusiness.id} onValueChange={switchBusiness}>
-                <SelectTrigger className="hidden h-9 w-40 sm:flex" aria-label="Switch business">
+                <SelectTrigger className="hidden h-9 w-44 sm:flex" aria-label="Switch business">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -65,16 +65,18 @@ export function AppShell() {
               </Button>
             ) : null}
             <NotificationsBell />
-            <div className="hidden text-right sm:block">
-              <p className="text-xs font-medium leading-none">{currentBusiness?.name || data.settings.businessName || "Inpolio"}</p>
-              <p className="text-[11px] text-muted-foreground">{user?.displayName || user?.username}</p>
+            <div className="hidden min-w-0 text-right sm:block">
+              <p className="truncate text-xs font-medium leading-none">{currentBusiness?.name || data.settings.businessName || "Inpolio"}</p>
+              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{user?.displayName || user?.username}</p>
             </div>
             <Button variant="ghost" size="icon" onClick={logout} aria-label="Sign out">
               <LogOut />
             </Button>
           </header>
           <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6">
-            <Outlet />
+            <div className="mx-auto w-full max-w-7xl">
+              <Outlet />
+            </div>
           </main>
         </div>
         <CommandSearch open={searchOpen} onOpenChange={setSearchOpen} />
@@ -84,5 +86,5 @@ export function AppShell() {
 }
 
 function cnDesktop(collapsed: boolean) {
-  return `hidden md:block shrink-0 transition-[width] ${collapsed ? "w-16" : "w-56"}`;
+  return `hidden h-full shrink-0 overflow-hidden border-r border-border md:block ${collapsed ? "w-16" : "w-56"}`;
 }

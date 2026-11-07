@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { calcLineTotals, createId, formatDate, formatMoney, matchesQuery, nextNumber, nowIso } from "@/lib/utils";
@@ -112,6 +113,7 @@ export function OrdersPage() {
       {rows.length === 0 ? (
         <EmptyState icon={ShoppingCart} title="No orders" description="Create an order after adding a customer and products." />
       ) : (
+        <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -159,6 +161,7 @@ export function OrdersPage() {
             ))}
           </TableBody>
         </Table>
+        </Card>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>

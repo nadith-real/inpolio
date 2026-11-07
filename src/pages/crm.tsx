@@ -60,7 +60,7 @@ export function CrmPage() {
     <div>
       <PageHeader
         title="CRM"
-        description="Sales pipeline. Drag is not required — use stage buttons to move leads."
+        description="Sales pipeline. Use stage buttons to move leads."
         actions={
           <WriteGate>
             <Button onClick={() => setOpen(true)}><Plus /> New lead</Button>
@@ -71,18 +71,18 @@ export function CrmPage() {
         {STAGES.map((stage) => {
           const leads = data.leads.filter((l) => l.stage === stage);
           return (
-            <div key={stage} className="min-h-40 rounded-lg border bg-muted/30 p-2">
-              <div className="mb-2 flex items-center justify-between px-1">
-                <p className="text-xs font-semibold uppercase tracking-wide">{LABELS[stage]}</p>
-                <span className="text-xs text-muted-foreground">{leads.length}</span>
+            <div key={stage} className="min-h-40 rounded-lg border border-border bg-card p-2">
+              <div className="mb-2 flex items-center justify-between px-2 py-1">
+                <p className="text-xs font-semibold">{LABELS[stage]}</p>
+                <span className="rounded-md bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">{leads.length}</span>
               </div>
               <div className="space-y-2">
                 {leads.map((lead) => (
-                  <Card key={lead.id}>
+                  <Card key={lead.id} className="border-border">
                     <CardContent className="space-y-1 p-3">
                       <p className="text-sm font-medium">{lead.name}</p>
                       <p className="text-xs text-muted-foreground">{lead.company || lead.contact || "No company"}</p>
-                      <p className="text-xs">{formatMoney(lead.potentialValue, currency)}</p>
+                      <p className="text-xs font-medium">{formatMoney(lead.potentialValue, currency)}</p>
                       {lead.nextFollowUp ? <p className="text-[11px] text-muted-foreground">Follow-up {lead.nextFollowUp}</p> : null}
                       {lead.isDemo ? <p className="text-[10px] uppercase text-muted-foreground">Demo</p> : null}
                       <WriteGate>
@@ -91,7 +91,7 @@ export function CrmPage() {
                             <button
                               key={s}
                               type="button"
-                              className="rounded border px-1.5 py-0.5 text-[10px] hover:bg-accent"
+                              className="rounded-md border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-accent hover:text-foreground"
                               onClick={() => move(lead, s)}
                             >
                               {LABELS[s]}

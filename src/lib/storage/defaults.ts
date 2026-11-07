@@ -9,6 +9,11 @@ export const DEFAULT_SETTINGS: BusinessSettings = {
   currency: "LKR",
   taxRate: 0,
   appearance: "system",
+  telegramEnabled: false,
+  telegramBotToken: "",
+  telegramChatId: "",
+  telegramEnabledAt: "",
+  telegramLastError: "",
 };
 
 export const EMPTY_DATA: AppData = {

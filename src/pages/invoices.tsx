@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty";
+import { Card } from "@/components/ui/card";
 import { WriteGate } from "@/components/auth/write-gate";
 import { useStore } from "@/lib/store";
 import { calcLineTotals, createId, formatDate, formatMoney, matchesQuery, nextNumber, nowIso, todayIsoDate } from "@/lib/utils";
@@ -123,6 +124,7 @@ export function InvoicesPage() {
       {rows.length === 0 ? (
         <EmptyState icon={FileText} title="No invoices" description="Create an invoice for a customer." />
       ) : (
+        <Card>
         <Table>
           <TableHeader>
             <TableRow>
@@ -168,6 +170,7 @@ export function InvoicesPage() {
             ))}
           </TableBody>
         </Table>
+        </Card>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
